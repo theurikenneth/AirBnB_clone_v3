@@ -2,7 +2,6 @@
 """
 Contains the class DBStorage
 """
-
 import models
 from models.amenity import Amenity
 from models.base_model import BaseModel, Base
@@ -74,3 +73,18 @@ class DBStorage:
     def close(self):
         """call remove() method on the private session attribute"""
         self.__session.remove()
+
+    def get(self, cls, id):
+        """ method to retrieve one object """
+        if (cls in classes or cls.__name__ in classes) and id is not None:
+            if type(cls) != str:
+                cls = classes[cls.__name__]
+            else:
+                cls = classes[cls]
+            return self.__session.query(cls).filter(cls.id == id).first()
+        else:
+            return None
+
+    def count(self, cls=None):
+        """ a method to count the number of objects in storage """
+        return len(self.all(cls))
